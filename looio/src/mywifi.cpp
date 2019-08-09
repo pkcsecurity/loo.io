@@ -1,4 +1,5 @@
-#include <Arduino.h>
+#include "mywifi.h"
+
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
@@ -48,7 +49,7 @@ void wifiConnectAndServe(void) {
 	MDNS.addService("http", "tcp", 80);
 }
 
-void serverLoop(void) {
+void serverLoop(String respText) {
 	// Check if a client has connected
 	WiFiClient client = server.available();
 	if(!client) {
@@ -90,7 +91,7 @@ void serverLoop(void) {
 	String resp;
 
 	if (req == "/") {
-		resp = successResp("I'm here!");
+		resp = successResp("I'm here! Status: " + respText);
 		Serial.println("Sending 200");
 	}
 	else {

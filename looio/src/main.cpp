@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "wifi.h"
+#include "mywifi.h"
 
 void setup(void) {
 	Serial.begin(9600);
@@ -8,5 +8,5 @@ void setup(void) {
 }
 
 void loop(void) {
-  serverLoop();
+  serverLoop("Stuff");
 }
