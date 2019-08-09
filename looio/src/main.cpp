@@ -10,6 +10,7 @@ void setup(void) {
     Serial.println("Starting wifi init process...");
     wifiConnectAndServe();
     pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, LOW);
     pinMode(switchPin, INPUT);
     digitalWrite(switchPin, HIGH);
 }
