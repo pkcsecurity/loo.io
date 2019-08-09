@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <analogWrite.h>
 #include "mywifi.h"
-const int switchPin = 2;
+const int switchPin = 15;
 const int ledPin = 13;
 bool doorOpen = false;
 
@@ -25,31 +25,34 @@ String getStatus() {
 void loop(void) {
     serverLoop(getStatus());
     // Door Closed
+    Serial.println(doorOpen);
     if (digitalRead(switchPin) == LOW) {
+        Serial.println("switchPin LOW");
         if (doorOpen == true) {
+            Serial.println("doorOpen true");
             doorOpen = false;
             Serial.println("Door changed to closed");
             float in, out;
-            digitalWrite(ledPin, LOW);
             for (in = 0; in < 6.283; in = in + 0.00628) {
                 out = sin(in) * 127.5 + 127.5;
                 analogWrite(ledPin, out);
                 delay(1);
             }
-            digitalWrite(ledPin, LOW);
+            digitalWrite(ledPin, HIGH);
         }
     } else {
+        Serial.println("ELSE switchPin NOT low");
         if (doorOpen == false) {
+            Serial.println("doorOpen true");
             doorOpen = true;
             Serial.println("Door changed to open");
             float in, out;
-            digitalWrite(ledPin, LOW);
             for (in = 0; in < 6.283; in = in + 0.00628) {
                 out = sin(in) * 127.5 + 127.5;
                 analogWrite(ledPin, out);
                 delay(1);
             }
-            digitalWrite(ledPin, LOW);
+            digitalWrite(ledPin, HIGH);
         }
     }
 }
