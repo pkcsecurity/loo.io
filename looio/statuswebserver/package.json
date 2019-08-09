@@ -6,6 +6,7 @@
     "@emotion/core": "^10.0.15",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-favicon": "0.0.16",
     "react-scripts": "3.0.1"
   },
   "scripts": {
