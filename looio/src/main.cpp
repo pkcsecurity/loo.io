@@ -25,11 +25,8 @@ String getStatus() {
 void loop(void) {
     serverLoop(getStatus());
     // Door Closed
-    Serial.println(doorOpen);
     if (digitalRead(switchPin) == LOW) {
-        Serial.println("switchPin LOW");
         if (doorOpen == true) {
-            Serial.println("doorOpen true");
             doorOpen = false;
             Serial.println("Door changed to closed");
             float in, out;
@@ -41,9 +38,7 @@ void loop(void) {
             digitalWrite(ledPin, LOW);
         }
     } else {
-        Serial.println("ELSE switchPin NOT low");
         if (doorOpen == false) {
-            Serial.println("doorOpen true");
             doorOpen = true;
             Serial.println("Door changed to open");
             float in, out;
