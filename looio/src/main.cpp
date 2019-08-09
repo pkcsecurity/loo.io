@@ -38,7 +38,7 @@ void loop(void) {
                 analogWrite(ledPin, out);
                 delay(1);
             }
-            digitalWrite(ledPin, HIGH);
+            digitalWrite(ledPin, LOW);
         }
     } else {
         Serial.println("ELSE switchPin NOT low");
@@ -52,7 +52,7 @@ void loop(void) {
                 analogWrite(ledPin, out);
                 delay(1);
             }
-            digitalWrite(ledPin, HIGH);
+            digitalWrite(ledPin, LOW);
         }
     }
 }
