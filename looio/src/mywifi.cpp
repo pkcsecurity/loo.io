@@ -1,28 +1,31 @@
 #include "mywifi.h"
-
 #include <WiFi.h>
 #include <ESPmDNS.h>
 #include <WiFiClient.h>
 
-const char* ssid = "PKC Security";
-const char* password = "dam2ranch2comet2gist2slay2kept";
+const char *ssid = "PKC Security";
+const char *password = "dam2ranch2comet2gist2slay2kept";
+const char *dns_name = "looiobottom";
 
 // TCP server at port 80 will respond to HTTP requests
 WiFiServer server{80, 1};
 
-String successResp(String body) {
-  String head = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
-  return head + body;
+String successResp(String body)
+{
+	String head = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
+	return head + body;
 }
 
-void wifiConnectAndServe(void) {
+void wifiConnectAndServe(void)
+{
 	// Connect to WiFi network
 	Serial.print("Connecting to ");
 	Serial.print(ssid);
 	WiFi.begin(ssid, password);
 
 	// Wait for connection
-	while(WiFi.status() != WL_CONNECTED) {
+	while (WiFi.status() != WL_CONNECTED)
+	{
 		delay(500);
 		Serial.print(".");
 	}
@@ -33,9 +36,11 @@ void wifiConnectAndServe(void) {
 	Serial.println(WiFi.localIP());
 
 	// Set up mDNS responder
-	if(!MDNS.begin("looio")) {
+	if (!MDNS.begin(dns_name))
+	{
 		Serial.println("Error setting up MDNS responder!");
-		while(true) {
+		while (true)
+		{
 			delay(1000);
 		}
 	}
@@ -49,17 +54,20 @@ void wifiConnectAndServe(void) {
 	MDNS.addService("http", "tcp", 80);
 }
 
-void serverLoop(String respText) {
+void serverLoop(String respText)
+{
 	// Check if a client has connected
 	WiFiClient client = server.available();
-	if(!client) {
+	if (!client)
+	{
 		return;
 	}
 
 	Serial.println("-------------------------------[Client Connected]-------------------------------");
 
 	// Wait for data from client to become available
-	while(client.connected() && !client.available()) {
+	while (client.connected() && !client.available())
+	{
 		delay(1);
 	}
 
@@ -74,7 +82,8 @@ void serverLoop(String respText) {
 	int pathStartIndex = req.indexOf(' ');
 	int pathEndIndex = req.indexOf(' ', pathStartIndex + 1);
 
-	if(pathStartIndex == -1 || pathEndIndex == -1) {
+	if (pathStartIndex == -1 || pathEndIndex == -1)
+	{
 		Serial.print("Invalid Request: ");
 		// NOTE: potential DDoS point as large requests could
 		// spam serial output and lock up the CPU
@@ -90,11 +99,13 @@ void serverLoop(String respText) {
 
 	String resp;
 
-	if (req == "/") {
+	if (req == "/")
+	{
 		resp = successResp(respText);
 		Serial.println("Sending 200");
 	}
-	else {
+	else
+	{
 		resp = "HTTP/1.1 404 Not Found\r\n\r\n";
 		Serial.println("Sending 404");
 	}
