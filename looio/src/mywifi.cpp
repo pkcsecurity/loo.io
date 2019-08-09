@@ -2,6 +2,7 @@
 #include <ESPmDNS.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include "host.h"
 
 const char *ssid = "PKC Security";
 const char *password = "dam2ranch2comet2gist2slay2kept";
@@ -35,13 +36,15 @@ void wifiConnectAndServe(void) {
     Serial.println(WiFi.localIP());
 
     // Set up mDNS responder
-    if (!MDNS.begin(dns_name)) {
+    if (!MDNS.begin(host)) {
         Serial.println("Error setting up MDNS responder!");
         while (true) {
             delay(1000);
         }
     }
-    Serial.println("mDNS responder started");
+    Serial.print("mDNS responder started at host ");
+    Serial.print(host);
+    Serial.println(".local");
 
     // Start TCP (HTTP) server
     server.begin();
