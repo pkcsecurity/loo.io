@@ -1,12 +1,12 @@
 #include <Arduino.h>
+#include "wifi.h"
 
-void setup()
-{
-    Serial.begin(9600);
+void setup(void) {
+	Serial.begin(9600);
+  Serial.println("Starting wifi init process...");
+  wifiConnectAndServe();
 }
 
-void loop()
-{
-    Serial.println("Hello world!");
-    delay(1000);
+void loop(void) {
+  serverLoop();
 }
