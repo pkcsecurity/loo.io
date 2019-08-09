@@ -11,7 +11,7 @@ const char* password = "dam2ranch2comet2gist2slay2kept";
 WiFiServer server{80, 1};
 
 String successResp(String body) {
-  String head = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n";
+  String head = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
   return head + body;
 }
 
@@ -91,7 +91,7 @@ void serverLoop(String respText) {
 	String resp;
 
 	if (req == "/") {
-		resp = successResp("I'm here! Status: " + respText);
+		resp = successResp(respText);
 		Serial.println("Sending 200");
 	}
 	else {

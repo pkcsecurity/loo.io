@@ -7,6 +7,15 @@ void setup(void) {
   wifiConnectAndServe();
 }
 
+bool occupied = false;
+
 void loop(void) {
-  serverLoop("Stuff");
+  String status;
+  if (occupied) {
+    status = "Occupied";
+  } else {
+    status = "Vacant";
+  }
+  occupied = !occupied;
+  serverLoop(status);
 }
