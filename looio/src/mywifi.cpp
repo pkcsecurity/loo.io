@@ -15,7 +15,7 @@ WiFiServer server{80, 1};
 HTTPClient client;
 
 void notifyOther(String route) {
-	String host = "http://" + otherhost + ".local/" + route;
+	String host = "http://" + otherhost + "/" + route;
 	Serial.print("Trying to GET ");
 	Serial.println(host);
 
