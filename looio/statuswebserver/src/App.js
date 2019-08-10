@@ -18,6 +18,7 @@ const statusStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const bathroomNameStyle = css`
@@ -106,8 +107,8 @@ const App = () => {
       <Favicon url={favicons[counter % 2]} />
       <div css={headerStyle}>
         loo.io
-        <div class='boyPee' />
-        <div class='girlPee' />
+        <div className='boyPee' />
+        <div className='girlPee' />
       </div>
       <div css={statusStyle}>
         <div css={bathroomNameStyle}>Upstairs</div>
