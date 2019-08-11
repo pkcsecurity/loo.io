@@ -24,31 +24,28 @@ String getStatus() {
 }
 
 void loop(void) {
-    serverLoop(getStatus());
+    // notification: 0 is no change, 1 is set to OPEN, and 2 is set to CLOSE
+    int notification = serverLoop(getStatus());
+    if (notification == 1) {
+      Serial.println("Marking other door as open");
+      digitalWrite(ledPin, LOW);
+    } else if (notification == 2) {
+      Serial.println("Marking other door as closed");
+      digitalWrite(ledPin, HIGH);
+    }
+
     // Door Closed
     if (digitalRead(switchPin) == LOW) {
         if (doorOpen == true) {
             doorOpen = false;
             Serial.println("Door changed to closed");
-            float in, out;
-            for (in = 0; in < 6.283; in = in + 0.00628) {
-                out = sin(in) * 127.5 + 127.5;
-                analogWrite(ledPin, out);
-                delay(1);
-            }
-            digitalWrite(ledPin, LOW);
+            notifyOther("close");
         }
     } else {
         if (doorOpen == false) {
             doorOpen = true;
             Serial.println("Door changed to open");
-            float in, out;
-            for (in = 0; in < 6.283; in = in + 0.00628) {
-                out = sin(in) * 127.5 + 127.5;
-                analogWrite(ledPin, out);
-                delay(1);
-            }
-            digitalWrite(ledPin, LOW);
+            notifyOther("open");
         }
     }
 }

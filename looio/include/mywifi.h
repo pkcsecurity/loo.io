@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
 
+void notifyOther(String route);
 void wifiConnectAndServe(void);
-void serverLoop(String respText);
+int serverLoop(String respText);
