@@ -8,7 +8,7 @@ bool doorOpen = false;
 void setup(void) {
     Serial.begin(9600);
     Serial.println("Starting wifi init process...");
-    wifiConnectAndServe();
+    wifiConnect();
     pinMode(ledPin, OUTPUT);
     digitalWrite(ledPin, LOW);
     pinMode(switchPin, INPUT);
@@ -17,35 +17,35 @@ void setup(void) {
 
 String getStatus() {
     if (doorOpen) {
-        return "Vacant";
+        return "open";
     } else {
-        return "Occupied";
+        return "closed";
     }
 }
 
 void loop(void) {
-    // notification: 0 is no change, 1 is set to OPEN, and 2 is set to CLOSE
-    int notification = serverLoop(getStatus());
-    if (notification == 1) {
-      Serial.println("Marking other door as open");
-      digitalWrite(ledPin, LOW);
-    } else if (notification == 2) {
-      Serial.println("Marking other door as closed");
-      digitalWrite(ledPin, HIGH);
-    }
-
-    // Door Closed
     if (digitalRead(switchPin) == LOW) {
+        // Door closed
         if (doorOpen == true) {
             doorOpen = false;
             Serial.println("Door changed to closed");
-            notifyOther("close");
         }
     } else {
+        // Door not closed
         if (doorOpen == false) {
             doorOpen = true;
             Serial.println("Door changed to open");
-            notifyOther("open");
         }
     }
+
+    String otherStatus = notifyServer(getStatus());
+    if (otherStatus == "closed") {
+      Serial.println("Marking other door as closed");
+      digitalWrite(ledPin, HIGH);
+    } else {
+      Serial.println("Marking other door as not closed");
+      digitalWrite(ledPin, LOW);
+    }
+
+    delay(1000);
 }

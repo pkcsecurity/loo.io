@@ -6,4 +6,4 @@
 
 statuswebserver/node_modules/*
 
-include/host.h
+include/secrets.h

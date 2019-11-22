@@ -1,40 +1,58 @@
 #include "mywifi.h"
-#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <HTTPClient.h>
-#include "host.h"
+#include "secrets.h"
 
-const char *ssid = "PKC Security";
-const char *password = "dam2ranch2comet2gist2slay2kept";
-const char *dns_name = "looiobottom";
-
-// TCP server at port 80 will respond to HTTP requests
-WiFiServer server{80, 1};
+const char* root_ca = \
+"-----BEGIN CERTIFICATE-----\n" \
+"MIIDxTCCAq2gAwIBAgIQAqxcJmoLQJuPC3nyrkYldzANBgkqhkiG9w0BAQUFADBs\n" \
+"MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n" \
+"d3cuZGlnaWNlcnQuY29tMSswKQYDVQQDEyJEaWdpQ2VydCBIaWdoIEFzc3VyYW5j\n" \
+"ZSBFViBSb290IENBMB4XDTA2MTExMDAwMDAwMFoXDTMxMTExMDAwMDAwMFowbDEL\n" \
+"MAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3\n" \
+"LmRpZ2ljZXJ0LmNvbTErMCkGA1UEAxMiRGlnaUNlcnQgSGlnaCBBc3N1cmFuY2Ug\n" \
+"RVYgUm9vdCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMbM5XPm\n" \
+"+9S75S0tMqbf5YE/yc0lSbZxKsPVlDRnogocsF9ppkCxxLeyj9CYpKlBWTrT3JTW\n" \
+"PNt0OKRKzE0lgvdKpVMSOO7zSW1xkX5jtqumX8OkhPhPYlG++MXs2ziS4wblCJEM\n" \
+"xChBVfvLWokVfnHoNb9Ncgk9vjo4UFt3MRuNs8ckRZqnrG0AFFoEt7oT61EKmEFB\n" \
+"Ik5lYYeBQVCmeVyJ3hlKV9Uu5l0cUyx+mM0aBhakaHPQNAQTXKFx01p8VdteZOE3\n" \
+"hzBWBOURtCmAEvF5OYiiAhF8J2a3iLd48soKqDirCmTCv2ZdlYTBoSUeh10aUAsg\n" \
+"EsxBu24LUTi4S8sCAwEAAaNjMGEwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQF\n" \
+"MAMBAf8wHQYDVR0OBBYEFLE+w2kD+L9HAdSYJhoIAu9jZCvDMB8GA1UdIwQYMBaA\n" \
+"FLE+w2kD+L9HAdSYJhoIAu9jZCvDMA0GCSqGSIb3DQEBBQUAA4IBAQAcGgaX3Nec\n" \
+"nzyIZgYIVyHbIUf4KmeqvxgydkAQV8GK83rZEWWONfqe/EW1ntlMMUu4kehDLI6z\n" \
+"eM7b41N5cdblIZQB2lWHmiRk9opmzN6cN82oNLFpmyPInngiK3BD41VHMWEZ71jF\n" \
+"hS9OMPagMRYjyOfiZRYzy78aG6A9+MpeizGLYAiJLQwGXFK3xPkKmNEVX58Svnw2\n" \
+"Yzi9RKR/5CYrCsSXaQ3pjOLAEFe4yHYSkVXySGnYvCoCWw9E1CAx2/S6cCZdkGCe\n" \
+"vEsXCS+0yx5DaMkHJ8HSXPfqIbloEpw8nL+e/IBcm2PN7EeqJSdnoDfzAIJ9VNep\n" \
+"+OkuE6N36B9K\n" \
+"-----END CERTIFICATE-----\n";
 
 HTTPClient client;
 
-void notifyOther(String route) {
-	String host = "http://" + otherhost + "/" + route;
-	Serial.print("Trying to GET ");
+String notifyServer(String status) {
+	String host = serverHost + "/api/putInfo";
+	Serial.print("Trying to POST ");
 	Serial.println(host);
 
-	client.begin(host);
-	int responseCode = client.GET();
+    String postData = "{\"status\": \"" + status + "\", \"host\": \"" + thisHost + "\"}";
+	client.begin(host, root_ca);
+    client.addHeader("Content-Type", "application/json");
+    client.addHeader("Authorization", "Bearer " + apikey);
+	int responseCode = client.POST(postData);
+    String response = client.getString();
 	client.end();
 
-	Serial.print("Got response code ");
+	Serial.print("Got response code: ");
 	Serial.println(responseCode);
+    Serial.print("Got response body: ");
+    Serial.println(response);
+
+    return response;
 }
 
-String successResp(String body) {
-    String head =
-        "HTTP/1.1 200 OK\r\nContent-Type: "
-        "text/plain\r\nAccess-Control-Allow-Origin: *\r\n\r\n";
-    return head + body;
-}
-
-void wifiConnectAndServe(void) {
+void wifiConnect(void) {
     // Connect to WiFi network
     Serial.print("Connecting to ");
     Serial.print(ssid);
@@ -50,85 +68,4 @@ void wifiConnectAndServe(void) {
     Serial.println("Connected!");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-
-    // Set up mDNS responder
-    if (!MDNS.begin(host)) {
-        Serial.println("Error setting up MDNS responder!");
-        while (true) {
-            delay(1000);
-        }
-    }
-    Serial.print("mDNS responder started at host ");
-    Serial.print(host);
-    Serial.println(".local");
-
-    // Start TCP (HTTP) server
-    server.begin();
-    Serial.println("TCP server started");
-
-    // Add service to MDNS-SD
-    MDNS.addService("http", "tcp", 80);
-}
-
-int serverLoop(String respText) {
-    // Check if a client has connected
-    WiFiClient client = server.available();
-    if (!client) {
-        return 0;
-    }
-
-    // Wait for data from client to become available
-    while (client.connected() && !client.available()) {
-        delay(1);
-    }
-
-    // Read the first line of HTTP request
-    // NOTE: potential DDoS point
-    // replace with timed and buffered read so only
-    // GET / HTTP/1.1 is a valid request that fits
-    // in the buffer
-    String req = client.readStringUntil('\r');
-
-    // Extract path part of HTTP GET request
-    int pathStartIndex = req.indexOf(' ');
-    int pathEndIndex = req.indexOf(' ', pathStartIndex + 1);
-
-    if (pathStartIndex == -1 || pathEndIndex == -1) {
-        Serial.print("Invalid Request: ");
-        // NOTE: potential DDoS point as large requests could
-        // spam serial output and lock up the CPU
-        Serial.println(req);
-        return 0;
-    }
-
-    req = req.substring(pathStartIndex + 1, pathEndIndex);
-    Serial.print("Request: ");
-    // NOTE: potential DDoS point as large requests could
-    // spam serial output and lock up the CPU
-    Serial.print(req);
-
-    String resp;
-
-		int retval = 0;
-    if (req == "/") {
-        resp = successResp(respText);
-        Serial.println(" | Sending 200");
-    } else if (req == "/open") {
-			resp = "HTTP/1.1 204 OK\r\n\r\n";
-			retval = 1;
-			Serial.println("Received open notification of other door!");
-		} else if (req == "/close") {
-			resp = "HTTP/1.1 204 OK\r\n\r\n";
-			retval = 2;
-			Serial.println("Received close notification of other door!");
-		} else {
-        resp = "HTTP/1.1 404 Not Found\r\n\r\n";
-        Serial.println("Sending 404");
-    }
-
-    // Send HTTP response
-    client.print(resp);
-
-    client.stop();
-		return retval;
 }
