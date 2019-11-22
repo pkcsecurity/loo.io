@@ -110,7 +110,6 @@ const App = () => {
       .then(response => {
         const upstairsStatus = response.top.status;
         const downstairsStatus = response.bottom.status;
-        console.log('response', response);
         setUpstairs(upstairsStatus);
         setDownstairs(downstairsStatus);
       })
@@ -120,6 +119,11 @@ const App = () => {
         setDownstairs('unknown');
       });
   }, [counter]);
+
+  const imageStyle = css`
+    width: 300px;
+    height: 100px;
+  `;
 
   return (
     <div className='App'>
@@ -133,10 +137,10 @@ const App = () => {
         <div css={bathroomNameStyle}>Upstairs</div>
         <div css={occupiedOrVacantStyle}>
           {upstairs === 'closed' && (
-            <img src={occupied} width={314} height={100} alt='occupied' />
+            <img src={occupied} css={imageStyle} alt='occupied' />
           )}
           {upstairs === 'open' && (
-            <img src={vacant} width={314} height={100} alt='vacant' />
+            <img src={vacant} css={imageStyle} alt='vacant' />
           )}
           {upstairs === 'unknown' && (
             <span role='img' aria-label='shrug'>
@@ -156,10 +160,10 @@ const App = () => {
         <div css={bathroomNameStyle}>Downstairs</div>
         <div css={occupiedOrVacantStyle}>
           {downstairs === 'closed' && (
-            <img src={occupied} width={400} height={100} alt='occupied' />
+            <img src={occupied} css={imageStyle} alt='occupied' />
           )}
           {downstairs === 'open' && (
-            <img src={vacant} width={400} height={100} alt='vacant' />
+            <img src={vacant} css={imageStyle} alt='vacant' />
           )}
           {downstairs === 'unknown' && (
             <span role='img' aria-label='shrug'>
