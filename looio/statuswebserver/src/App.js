@@ -6,20 +6,21 @@ import Favicon from 'react-favicon';
 
 import './App.css';
 
+const appStyle = css`
+  display: flex;
+  height: 90vh;
+  width: 100vw;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const statusStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   height: calc(100vh / 3);
-`;
-
-const occupiedOrVacantStyle = css`
-  display: flex;
-  width: 45rem;
-  font-size: 5rem;
-  align-items: center;
-  justify-content: center;
 `;
 
 const favicons = [
@@ -94,23 +95,19 @@ const App = () => {
   const niceRed = '#CC0000';
 
   return (
-    <div className='App'>
+    <div css={appStyle}>
       <Favicon url={favicons[counter % 2]} />
       <div css={statusStyle}>
-        <div css={occupiedOrVacantStyle}>
-          {upstairs === 'closed' && <Circle bgColor={niceRed} />}
-          {upstairs === 'open' && <Circle bgColor={niceGreen} />}
-          {upstairs === 'unknown' && <Circle bgColor='gray' />}
-          {!upstairs && <Circle bgColor='gray' />}
-        </div>
+        {upstairs === 'closed' && <Circle bgColor={niceRed} />}
+        {upstairs === 'open' && <Circle bgColor={niceGreen} />}
+        {upstairs === 'unknown' && <Circle bgColor='gray' />}
+        {!upstairs && <Circle bgColor='gray' />}
       </div>
       <div css={statusStyle}>
-        <div css={occupiedOrVacantStyle}>
-          {downstairs === 'closed' && <Circle bgColor={niceRed} />}
-          {downstairs === 'open' && <Circle bgColor={niceGreen} />}
-          {downstairs === 'unknown' && <Circle bgColor='gray' />}
-          {!downstairs && <Circle bgColor='gray' />}
-        </div>
+        {downstairs === 'closed' && <Circle bgColor={niceRed} />}
+        {downstairs === 'open' && <Circle bgColor={niceGreen} />}
+        {downstairs === 'unknown' && <Circle bgColor='gray' />}
+        {!downstairs && <Circle bgColor='gray' />}
       </div>
     </div>
   );
