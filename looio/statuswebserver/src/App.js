@@ -5,8 +5,8 @@ import { jsx, css } from '@emotion/core';
 import Favicon from 'react-favicon';
 
 import './App.css';
-import occupied from './occupied.png';
-import vacant from './vacant.png';
+import occupied from './occupied.jpg';
+import vacant from './vacant.jpg';
 
 const headerStyle = css`
   font-family: 'Beth Ellen', cursive;
@@ -80,11 +80,11 @@ const App = () => {
         return response.text();
       })
       .then(response => {
-        //console.log('response', response);
+        console.log('response', response);
         setUpstairs(response);
       })
       .catch(error => {
-        //console.log('error', error);
+        console.log('error', error);
         setUpstairs('unknown');
       });
 
@@ -93,11 +93,11 @@ const App = () => {
         return response.text();
       })
       .then(response => {
-        //console.log('response', response);
+        console.log('response', response);
         setDownstairs(response);
       })
       .catch(error => {
-        //console.log('error', error);
+        console.log('error', error);
         setDownstairs('unknown');
       });
   }, [counter]);
@@ -114,10 +114,10 @@ const App = () => {
         <div css={bathroomNameStyle}>Upstairs</div>
         <div css={occupiedOrVacantStyle}>
           {upstairs === 'Occupied' && (
-            <img src={occupied} width={400} height={100} alt='occupied' />
+            <img src={occupied} width={314} height={100} alt='occupied' />
           )}
           {upstairs === 'Vacant' && (
-            <img src={vacant} width={400} height={100} alt='vacant' />
+            <img src={vacant} width={314} height={100} alt='vacant' />
           )}
           {upstairs === 'unknown' && (
             <span role='img' aria-label='shrug'>
