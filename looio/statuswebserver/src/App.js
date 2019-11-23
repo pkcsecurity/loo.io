@@ -8,7 +8,8 @@ import './App.css';
 
 const appStyle = css`
   display: flex;
-  height: 90vh;
+  height: 100vh;
+  margin-top: calc(-5vh);
   width: 100vw;
   justify-content: center;
   flex-direction: column;
@@ -91,8 +92,13 @@ const App = () => {
       });
   }, [counter]);
 
-  const niceGreen = '#008C00';
-  const niceRed = '#CC0000';
+  //const niceGreen = '#008C00';
+  //const niceRed = '#CC0000';
+  //const niceGreen = '#3B8183';
+  //const niceRed = '#ED303C';
+  //const niceGreen = '#A1DBB2';
+  const niceGreen = '#81D898';
+  const niceRed = '#F45D4C';
 
   return (
     <div css={appStyle}>
