@@ -38,6 +38,10 @@
   }
 }
 
+body {
+  background-color: #FEE5AD;
+}
+
 html {
   font-size: 10px;
   position: fixed;
